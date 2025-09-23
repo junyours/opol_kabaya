@@ -54,4 +54,22 @@ class AccountVerificationController extends Controller
                 'postal_code' => $request->postal_code,
             ]);
     }
+
+    public function submitId(Request $request)
+    {
+        $request->validate([
+            'idPhoto' => ['required', 'image', 'mimes:jpg,jpeg,png',],
+            'selfieIdPhoto' => ['required', 'image', 'mimes:jpg,jpeg,png',],
+        ]);
+
+        $idPhotoPath = $request->file('idPhoto')->store('id_photos', 'public');
+        $selfiePhotoIdPath = $request->file('selfieIdPhoto')->store('selfie_id_photos', 'public');
+
+        User::find($request->user()->id)
+            ->update([
+                'id_photo' => $idPhotoPath,
+                'selfie_id_photo' => $selfiePhotoIdPath,
+                'verification_status' => 'pending',
+            ]);
+    }
 }

@@ -26,6 +26,9 @@ return new class extends Migration
             $table->string('postal_code')->nullable();
             $table->string('phone_number')->unique()->nullable();
             $table->string('profile_picture')->nullable();
+            $table->string('id_photo')->nullable();
+            $table->string('selfie_id_photo')->nullable();
+            $table->string('verification_status')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->string('role')->default('user');
             $table->string('email')->unique();

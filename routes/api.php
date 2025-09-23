@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/mobile/update-identity', [AccountVerificationController::class, 'updateIdentity']);
     Route::post('/mobile/update-address', [AccountVerificationController::class, 'updateAddress']);
+    Route::post('/mobile/submit-id', [AccountVerificationController::class, 'submitId']);
 
     Route::post('/mobile/change-password', [AuthController::class, 'changePassword']);
     Route::get('/mobile/logout', [AuthController::class, 'logout']);
