@@ -39,7 +39,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (!$user || !$user->password) {
             return response()->json(['message' => 'The email address is invalid.'], 422);
         }
 
@@ -64,16 +64,33 @@ class AuthController extends Controller
         $request->validate([
             'first_name' => ['required'],
             'last_name' => ['required'],
-            'email' => ['required', 'email', 'unique:users,email'],
+            'email' => ['required', 'email'],
         ]);
 
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
-            'suffix' => $request->suffix === "N/A" ? null : $request->suffix,
-            'email' => $request->email,
-        ]);
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            if (!$user->password) {
+                $user->update([
+                    'first_name' => $request->first_name,
+                    'middle_name' => $request->middle_name,
+                    'last_name' => $request->last_name,
+                    'suffix' => $request->suffix === "N/A" ? null : $request->suffix,
+                ]);
+            } else {
+                $request->validate([
+                    'email' => ['unique:users,email'],
+                ]);
+            }
+        } else {
+            $user = User::create([
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'suffix' => $request->suffix === "N/A" ? null : $request->suffix,
+                'email' => $request->email,
+            ]);
+        }
 
         $this->otp($user);
     }
